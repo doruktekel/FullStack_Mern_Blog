@@ -15,7 +15,7 @@ const signup = async (req, res, next) => {
     email === "" ||
     password === ""
   ) {
-    return next(errorHandler(345, "Fill all the blankets !"));
+    return next(errorHandler(400, "Fill all the blankets !"));
   }
 
   try {

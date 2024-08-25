@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
 import { Label, TextInput, Button, Spinner, Alert } from "flowbite-react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import useSignIn from "../hooks/useSignIn";
 
 const SignIn = () => {
+  const { signIn } = useSignIn();
+  const { loading, error: errorMessage } = useSelector((store) => store.user);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
-  const { loading, errorMessage, signIn } = useSignIn();
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -30,7 +30,7 @@ const Header = () => {
         <Button className="hidden sm:inline w-12 h-10  pill" color="gray">
           <FaRegMoon />
         </Button>
-        <Link>
+        <Link to={"/sign-in"}>
           <Button gradientDuoTone="purpleToBlue" outline>
             Sign In
           </Button>

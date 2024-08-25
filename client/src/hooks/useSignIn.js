@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import {
+  signInFailure,
+  signInLoading,
+  signInSuccess,
+} from "../features/user/userSlice";
 
 const useSignIn = () => {
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const signIn = async (formData) => {
     if (!formData.email || !formData.password) {
-      return setErrorMessage("Please fill all the fields");
+      return dispatch(signInFailure("Please fill all the fields"));
     }
-
-    setLoading(true);
+    dispatch(signInLoading());
     try {
       const res = await fetch("/api/auth/signin", {
         method: "POST",
@@ -19,22 +21,20 @@ const useSignIn = () => {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-
       if (data.success === false) {
-        return setErrorMessage(data.message);
+        return dispatch(signInFailure(data.message));
       }
-
       if (res.ok) {
+        dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      setErrorMessage(error.message);
-    } finally {
-      setLoading(false);
+      dispatch(signInFailure(error.message));
+      console.log(error);
     }
   };
 
-  return { loading, errorMessage, signIn };
+  return { signIn };
 };
 
 export default useSignIn;
