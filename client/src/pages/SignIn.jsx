@@ -3,6 +3,7 @@ import { Label, TextInput, Button, Spinner, Alert } from "flowbite-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import useSignIn from "../hooks/useSignIn";
+import OAuth from "../components/OAuth";
 
 const SignIn = () => {
   const { signIn } = useSignIn();
@@ -84,6 +85,7 @@ const SignIn = () => {
               )}
             </Button>
           </form>
+          <OAuth />
           <p>
             Dont you have an account ?{" "}
             <Link to={"/sign-up"} className="font-semibold text-purple-600">

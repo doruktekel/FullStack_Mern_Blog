@@ -1,6 +1,6 @@
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { hashPassword } from "../helpers/authHelpers.js";
+import { generateToken, hashPassword } from "../helpers/authHelpers.js";
 import errorHandler from "../middlewares/errorMiddleware.js";
 import UserModel from "../models/userModel.js";
 
@@ -50,20 +50,35 @@ const signin = async (req, res, next) => {
     return next(errorHandler(400, "Credentials are wrong !"));
   }
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
-    expiresIn: "30d",
-  });
-
-  const { password: _, ...rest } = user._doc;
-
-  res
-    .cookie("access_token", token, {
-      httpOnly: true,
-      sameSite: true,
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-    })
-    .status(200)
-    .json(rest);
+  generateToken(user, res);
 };
 
-export { signup, signin };
+const google = async (req, res, next) => {
+  const { name, email, googlePhotoUrl } = req.body;
+
+  const user = await UserModel.findOne({ email });
+
+  try {
+    if (user) {
+      generateToken(user, res);
+    } else {
+      const generatePassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      const hashedPassword = await bcryptjs.hash(generatePassword, 12);
+      const newUser = await UserModel.create({
+        username:
+          name.toLowerCase().split(" ").join("") +
+          Math.random().toString(9).slice(-4),
+        email,
+        password: hashedPassword,
+        profilePicture: googlePhotoUrl,
+      });
+      generateToken(newUser, res);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { signup, signin, google };
