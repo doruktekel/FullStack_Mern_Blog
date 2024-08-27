@@ -40,7 +40,7 @@ const SignIn = () => {
             </span>{" "}
             Demo
           </Link>
-          <p className="mt-8 font-semibold text-gray-800">
+          <p className="mt-8 font-semibold ">
             This is the demo project , you can sign in with google
             authentication.
           </p>

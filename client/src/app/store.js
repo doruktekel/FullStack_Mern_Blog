@@ -11,9 +11,11 @@ import {
   REGISTER,
 } from "redux-persist";
 import userSlice from "../features/user/userSlice";
+import themeSlice from "../features/theme/themeSlice";
 
 const rootReducer = combineReducers({
   user: userSlice,
+  theme: themeSlice,
 });
 
 const persistConfig = {
