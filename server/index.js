@@ -1,6 +1,7 @@
 import express from "express";
-import connectDb from "./config/db.js";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import connectDb from "./config/db.js";
 import userRouter from "./routes/userRoute.js";
 import authRouter from "./routes/authRoute.js";
 
@@ -9,9 +10,10 @@ dotenv.config();
 connectDb();
 
 app.use(express.json());
+app.use(cookieParser());
 
-app.use("/", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
 
 app.use((err, req, res, next) => {
   let statusCode = err.statusCode || 500;

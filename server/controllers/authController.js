@@ -1,5 +1,4 @@
 import bcryptjs from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { generateToken, hashPassword } from "../helpers/authHelpers.js";
 import errorHandler from "../middlewares/errorMiddleware.js";
 import UserModel from "../models/userModel.js";
