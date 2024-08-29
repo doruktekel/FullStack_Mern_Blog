@@ -1,6 +1,6 @@
 import { Alert, Button, Label, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   getStorage,
   ref,
@@ -10,14 +10,19 @@ import {
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { app } from "../firebase";
+import useUpdateProfile from "../hooks/useUpdateProfile";
+import { clearError } from "../features/user/userSlice";
 
 const DashProfile = () => {
-  const { currentUser } = useSelector((store) => store.user);
+  const { currentUser, error } = useSelector((store) => store.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
+  const [formData, setFormData] = useState({});
+  const { update } = useUpdateProfile();
   const filePickerRef = useRef();
+  const dispatch = useDispatch();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -31,6 +36,7 @@ const DashProfile = () => {
     if (imageFile) {
       uploadImage();
     }
+    dispatch(clearError());
   }, [imageFile]);
 
   const uploadImage = async () => {
@@ -57,15 +63,29 @@ const DashProfile = () => {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImageFileUrl(downloadURL);
+          setFormData({ ...formData, profilePicture: downloadURL });
         });
       }
     );
   };
 
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await update(formData);
+  };
+
   return (
     <div className="max-w-lg mx-auto my-4 flex flex-col w-full p-4 ">
       <h1 className="font-semibold uppercase text-center mb-4">profile</h1>
-      <form className="flex flex-col gap-4">
+      <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
         <input
           type="file"
           accept="image/*"
@@ -122,6 +142,7 @@ const DashProfile = () => {
             type="text"
             sizing="md"
             defaultValue={currentUser.username}
+            onChange={handleChange}
           />
         </div>
         <div className="mb-2">
@@ -134,6 +155,7 @@ const DashProfile = () => {
             type="email"
             sizing="md"
             defaultValue={currentUser.email}
+            onChange={handleChange}
           />
         </div>
         <div className="mb-4">
@@ -145,13 +167,15 @@ const DashProfile = () => {
             type="password"
             sizing="md"
             placeholder="*****"
+            onChange={handleChange}
           />
         </div>
-        <Button gradientDuoTone="purpleToPink" outline>
+        <Button gradientDuoTone="purpleToPink" outline type="submit">
           Update
         </Button>
+        {error && <Alert color="failure">*{error}</Alert>}
       </form>
-      <div className="text-red-500 flex justify-between ">
+      <div className="text-red-500 flex justify-between  mt-2">
         <span className="cursor-pointer">Delete Account</span>
         <span className="cursor-pointer">Sign Out</span>
       </div>
