@@ -55,4 +55,17 @@ const update = async (req, res, next) => {
   }
 };
 
-export { update };
+const deleteUser = async (req, res, next) => {
+  if (req.user.id !== req.params.userId) {
+    return next(errorHandler(403, "You can just delete own user account"));
+  }
+
+  try {
+    const deletedUser = await UserModel.findByIdAndDelete(req.user.id);
+    res.status(200).json(deletedUser);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { update, deleteUser };
