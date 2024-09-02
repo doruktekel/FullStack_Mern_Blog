@@ -1,4 +1,4 @@
-import { Alert, Button, Label, TextInput } from "flowbite-react";
+import { Alert, Button, Label, Modal, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -12,6 +12,8 @@ import "react-circular-progressbar/dist/styles.css";
 import { app } from "../firebase";
 import useUpdateProfile from "../hooks/useUpdateProfile";
 import { clearError } from "../features/user/userSlice";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
+import useDeleteProfile from "../hooks/useDeleteProfile";
 
 const DashProfile = () => {
   const { currentUser, error } = useSelector((store) => store.user);
@@ -20,7 +22,9 @@ const DashProfile = () => {
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
   const [formData, setFormData] = useState({});
+  const [showModal, setShowModal] = useState(false);
   const { update } = useUpdateProfile();
+  const { deleteUser } = useDeleteProfile();
   const filePickerRef = useRef();
   const dispatch = useDispatch();
 
@@ -80,6 +84,10 @@ const DashProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await update(formData);
+  };
+
+  const handleDelete = async () => {
+    await deleteUser();
   };
 
   return (
@@ -176,9 +184,35 @@ const DashProfile = () => {
         {error && <Alert color="failure">*{error}</Alert>}
       </form>
       <div className="text-red-500 flex justify-between  mt-2">
-        <span className="cursor-pointer">Delete Account</span>
+        <span className="cursor-pointer" onClick={() => setShowModal(true)}>
+          Delete Account
+        </span>
         <span className="cursor-pointer">Sign Out</span>
       </div>
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header></Modal.Header>
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete your account?
+            </h3>
+            <div className="flex gap-4 justify-center items-center">
+              <Button onClick={handleDelete} color="gray">
+                I accept
+              </Button>
+              <Button onClick={() => setShowModal(false)} color="failure">
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
