@@ -14,6 +14,7 @@ import useUpdateProfile from "../hooks/useUpdateProfile";
 import { clearError } from "../features/user/userSlice";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import useDeleteProfile from "../hooks/useDeleteProfile";
+import useSignOut from "../hooks/useSignOut";
 
 const DashProfile = () => {
   const { currentUser, error } = useSelector((store) => store.user);
@@ -25,6 +26,7 @@ const DashProfile = () => {
   const [showModal, setShowModal] = useState(false);
   const { update } = useUpdateProfile();
   const { deleteUser } = useDeleteProfile();
+  const { signOut } = useSignOut();
   const filePickerRef = useRef();
   const dispatch = useDispatch();
 
@@ -88,6 +90,10 @@ const DashProfile = () => {
 
   const handleDelete = async () => {
     await deleteUser();
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   return (
@@ -187,7 +193,9 @@ const DashProfile = () => {
         <span className="cursor-pointer" onClick={() => setShowModal(true)}>
           Delete Account
         </span>
-        <span className="cursor-pointer">Sign Out</span>
+        <span className="cursor-pointer" onClick={handleSignOut}>
+          Sign Out
+        </span>
       </div>
       <Modal
         show={showModal}

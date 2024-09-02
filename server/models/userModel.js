@@ -21,6 +21,10 @@ const UserSchema = new mongoose.Schema(
       default:
         "https://static-00.iconduck.com/assets.00/profile-circle-icon-256x256-cm91gqm2.png",
     },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

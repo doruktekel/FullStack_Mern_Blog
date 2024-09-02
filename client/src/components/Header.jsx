@@ -12,12 +12,18 @@ import { Link, useLocation } from "react-router-dom";
 import { FaSearch, FaRegMoon, FaSun } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../features/theme/themeSlice";
+import useSignOut from "../hooks/useSignOut";
 
 const Header = () => {
   const { currentUser } = useSelector((store) => store.user);
   const { theme } = useSelector((store) => store.theme);
   const dispatch = useDispatch();
   const path = useLocation().pathname;
+  const { signOut } = useSignOut();
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <Navbar className="border-b-2 ">
@@ -70,7 +76,7 @@ const Header = () => {
               <DropdownItem>Profile</DropdownItem>
             </Link>
 
-            <DropdownItem>Sign Out</DropdownItem>
+            <DropdownItem onClick={handleSignOut}>Sign Out</DropdownItem>
           </Dropdown>
         ) : (
           <Link to={"/sign-in"}>
