@@ -13,6 +13,7 @@ const verifyUser = async (req, res, next) => {
   }
 
   req.user = decode;
+
   next();
 };
 
