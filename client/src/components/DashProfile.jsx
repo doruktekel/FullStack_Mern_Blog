@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Alert, Button, Label, Modal, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -17,7 +18,7 @@ import useDeleteProfile from "../hooks/useDeleteProfile";
 import useSignOut from "../hooks/useSignOut";
 
 const DashProfile = () => {
-  const { currentUser, error } = useSelector((store) => store.user);
+  const { currentUser, error, loading } = useSelector((store) => store.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
@@ -185,8 +186,19 @@ const DashProfile = () => {
           />
         </div>
         <Button gradientDuoTone="purpleToPink" outline type="submit">
-          Update
+          {loading ? "Loading..." : "Update"}
         </Button>
+        {currentUser.isAdmin && (
+          <Link to={"/create-post"}>
+            <Button
+              gradientDuoTone="purpleToBlue"
+              className="w-full my-2"
+              outline
+            >
+              Create Post
+            </Button>
+          </Link>
+        )}
         {error && <Alert color="failure">*{error}</Alert>}
       </form>
       <div className="text-red-500 flex justify-between  mt-2">
