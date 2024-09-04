@@ -1,13 +1,15 @@
-import { Button, Sidebar, SidebarItem } from "flowbite-react";
+import { Sidebar, SidebarItem } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { FaRegUser, FaArrowRight } from "react-icons/fa";
+import { FaRegUser, FaArrowRight, FaFileInvoice } from "react-icons/fa";
 import { useLocation, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import useSignOut from "../hooks/useSignOut";
 
 const DashSidebar = () => {
   const location = useLocation();
   const [tab, setTab] = useState("");
   const { signOut } = useSignOut();
+  const { currentUser } = useSelector((store) => store.user);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -31,11 +33,22 @@ const DashSidebar = () => {
             to="/dashboard?tab=profile"
             active={tab === "profile"}
             icon={FaRegUser}
-            label={"user"}
+            label={currentUser.isAdmin ? "admin" : "user"}
             labelColor="dark"
           >
             Profile
           </SidebarItem>
+          {currentUser && currentUser.isAdmin && (
+            <Sidebar.Item
+              as={Link}
+              to="/dashboard?tab=posts"
+              active={tab === "posts"}
+              icon={FaFileInvoice}
+              labelColor="dark"
+            >
+              Posts
+            </Sidebar.Item>
+          )}
 
           <SidebarItem
             className="cursor-pointer"
