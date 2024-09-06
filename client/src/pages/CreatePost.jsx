@@ -46,7 +46,7 @@ const CreatePost = () => {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setFormData({ ...formData, image: downloadURL });
+            setFormData({ ...formData, postImage: downloadURL });
             setUploadImageError(null);
             setUploadImageProgress(null);
           });
@@ -135,8 +135,11 @@ const CreatePost = () => {
           </Button>
         </div>
         {uploadImageError && <Alert color="failure">{uploadImageError}</Alert>}
-        {formData && formData.image && (
-          <img src={formData.image} className="h-full w-full object-cover" />
+        {formData && formData.postImage && (
+          <img
+            src={formData.postImage}
+            className="h-full w-full object-cover"
+          />
         )}
         <ReactQuill
           placeholder="Write something..."

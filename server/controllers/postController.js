@@ -27,4 +27,54 @@ const createPost = async (req, res, next) => {
   }
 };
 
-export { createPost };
+const getPosts = async (req, res, next) => {
+  try {
+    const startIndex = +req.query.startIndex || 0;
+    const limit = +req.query.limit || 9;
+    const sortDirection = req.query.order === "asc" ? 1 : -1;
+
+    const posts = await PostModel.find({
+      ...(req.query.userId && { userId: req.query.userId }),
+      ...(req.query.category && { category: req.query.category }),
+      ...(req.query.slug && { slug: req.query.slug }),
+      ...(req.query.postId && { postId: req.query.postId }),
+      ...(req.query.searchTerm && {
+        $or: [
+          { title: { $regex: req.query.searchTerm, $options: "i" } },
+          { content: { $regex: req.query.searchTerm, $options: "i" } },
+        ],
+      }),
+    })
+      .sort({ updatedAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit);
+
+    if (posts.length === 0) {
+      return next(errorHandler(404, "Could not find posts"));
+    }
+
+    const totalPosts = await PostModel.countDocuments();
+
+    const now = new Date();
+
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+
+    const lastMonthPosts = await PostModel.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
+
+    res.status(200).json({
+      posts,
+      totalPosts,
+      lastMonthPosts,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { createPost, getPosts };
