@@ -16,6 +16,10 @@ const PostSchema = new mongoose.Schema(
       default:
         "https://www.emdocs.net/wp-content/themes/emdocs/images/default-image.jpg",
     },
+    imageName: {
+      type: String,
+      unique: true,
+    },
     slug: {
       type: String,
       required: true,
