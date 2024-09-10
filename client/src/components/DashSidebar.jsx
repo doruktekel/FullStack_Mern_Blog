@@ -1,6 +1,11 @@
 import { Sidebar, SidebarItem } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { FaRegUser, FaArrowRight, FaFileInvoice } from "react-icons/fa";
+import {
+  FaRegUser,
+  FaArrowRight,
+  FaFileInvoice,
+  FaUsers,
+} from "react-icons/fa";
 import { useLocation, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import useSignOut from "../hooks/useSignOut";
@@ -47,6 +52,17 @@ const DashSidebar = () => {
               labelColor="dark"
             >
               Posts
+            </Sidebar.Item>
+          )}
+          {currentUser && currentUser.isAdmin && (
+            <Sidebar.Item
+              as={Link}
+              to="/dashboard?tab=users"
+              active={tab === "users"}
+              icon={FaUsers}
+              labelColor="dark"
+            >
+              Users
             </Sidebar.Item>
           )}
 
