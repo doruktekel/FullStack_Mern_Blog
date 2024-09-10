@@ -19,10 +19,6 @@ const DashUsers = () => {
   const [showModal, setShowModal] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState("");
 
-  console.log(deleteUserId);
-
-  console.log(users);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
