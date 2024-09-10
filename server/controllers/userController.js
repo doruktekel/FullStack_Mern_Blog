@@ -61,11 +61,70 @@ const deleteUser = async (req, res, next) => {
   }
 
   try {
-    const deletedUser = await UserModel.findByIdAndDelete(req.user.id);
+    const deletedUser = await UserModel.findByIdAndDelete(req.params.userId);
     res.status(200).json(deletedUser);
   } catch (error) {
     next(error);
   }
 };
 
-export { update, deleteUser };
+const deleteUsers = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return next(errorHandler(403, "You can just delete own user account"));
+  }
+
+  try {
+    const deletedUser = await UserModel.findByIdAndDelete(req.params.userId);
+    res.status(200).json(deletedUser);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getUsers = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return next(errorHandler(403, "Not allow to getting users !"));
+  }
+
+  try {
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const sortDirection = req.query.sort === "asc" ? 1 : -1;
+
+    const users = await UserModel.find({
+      _id: {
+        $ne: req.user.id,
+      },
+    })
+      .select("-password")
+      .sort({ createdAt: sortDirection })
+      .limit(limit)
+      .skip(startIndex);
+
+    // const usersWithoutPassword = users.map((user) => {
+    //   const { password: _, ...rest } = user._doc;
+    //   return rest;
+    // });
+
+    const totalUsers = await UserModel.countDocuments();
+
+    let oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+    const lastMonthUsers = await UserModel.countDocuments({
+      createdAt: {
+        $gte: oneMonthAgo,
+      },
+    });
+
+    res.status(200).json({
+      users,
+      totalUsers,
+      lastMonthUsers,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { update, deleteUser, getUsers, deleteUsers };
