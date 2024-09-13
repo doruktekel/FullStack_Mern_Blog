@@ -3,19 +3,18 @@ import { Link, useParams } from "react-router-dom";
 import useGetPost from "../hooks/useGetPost";
 import { Button, Spinner } from "flowbite-react";
 import CallToAction from "../components/CallToAction";
+import CommentSection from "../components/CommentSection";
 
 const PostPage = () => {
   const { slug } = useParams();
   const { getPost, post, error, loading } = useGetPost();
-  console.log(post);
 
   useEffect(() => {
-    // const getPostFunc = async () => {
-    //   await getPost(slug);
-    // };
-    // getPostFunc();
+    const getPostFunc = async () => {
+      await getPost(slug);
+    };
 
-    getPost(slug);
+    getPostFunc();
   }, [slug]);
 
   if (error) {
@@ -56,6 +55,7 @@ const PostPage = () => {
       <div className="max-w-4xl mx-auto w-full">
         <CallToAction />
       </div>
+      <CommentSection postId={post && post._id} />
     </div>
   );
 };
