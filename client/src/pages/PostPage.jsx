@@ -10,12 +10,16 @@ const PostPage = () => {
   const { getPost, post, error, loading } = useGetPost();
 
   useEffect(() => {
-    const getPostFunc = async () => {
-      await getPost(slug);
-    };
-
-    getPostFunc();
+    getPost(slug);
   }, [slug]);
+
+  if (loading) {
+    return (
+      <div className=" flex justify-center items-center min-h-screen">
+        <Spinner size="xl" />
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -49,7 +53,7 @@ const PostPage = () => {
         </span>
       </div>
       <div
-        className="max-w-2xl mx-auto post-content"
+        className="p-2 max-w-2xl mx-auto post-content"
         dangerouslySetInnerHTML={{ __html: post && post.content }}
       ></div>
       <div className="max-w-4xl mx-auto w-full">

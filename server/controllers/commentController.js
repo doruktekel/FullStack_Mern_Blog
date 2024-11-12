@@ -40,3 +40,38 @@ export const getComments = async (req, res, next) => {
     next(error);
   }
 };
+
+export const likeComment = async (req, res, next) => {
+  const { commentId } = req.params;
+  const { id: userId } = req.user;
+
+  try {
+    const comment = await CommentModel.findById(commentId);
+
+    if (!comment) {
+      return next(errorHandler(404, "Comment not found"));
+    }
+
+    const isLiked = comment.likes.includes(userId);
+
+    let updatedComment;
+
+    if (isLiked) {
+      updatedComment = await CommentModel.findOneAndUpdate(
+        { _id: commentId },
+        { $pull: { likes: userId } },
+        { new: true }
+      );
+    } else {
+      updatedComment = await CommentModel.findOneAndUpdate(
+        { _id: commentId },
+        { $addToSet: { likes: userId } },
+        { new: true }
+      );
+    }
+
+    res.status(200).json({ likes: updatedComment.likes.length });
+  } catch (error) {
+    next(error);
+  }
+};

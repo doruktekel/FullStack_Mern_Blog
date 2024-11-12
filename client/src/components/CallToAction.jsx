@@ -10,14 +10,12 @@ const CallToAction = () => {
         <Button
           gradientDuoTone="purpleToPink"
           className="rounded-tl-xl rounded-bl-none"
+          as="a"
+          href="https://github.com/doruktekel"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          <a
-            href="https://github.com/doruktekel"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            My github link
-          </a>
+          My github link
         </Button>
       </div>
       <div className="p-7 ">

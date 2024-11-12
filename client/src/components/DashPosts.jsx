@@ -86,7 +86,7 @@ const DashPosts = () => {
       });
   };
 
-  const handleDelePost = async () => {
+  const handleDeletePost = async () => {
     setShowModal(false);
     try {
       const res = await fetch(
@@ -199,7 +199,7 @@ const DashPosts = () => {
                   Are you sure you want to delete this post ?
                 </h3>
                 <div className="flex gap-4 justify-center items-center">
-                  <Button onClick={() => handleDelePost()} color="gray">
+                  <Button onClick={() => handleDeletePost()} color="gray">
                     I accept
                   </Button>
                   <Button onClick={() => setShowModal(false)} color="failure">

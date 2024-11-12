@@ -3,7 +3,7 @@ import { useState } from "react";
 const useGetComments = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [newGetComments, setNewGetComments] = useState([]);
+  const [fetchedComments, setFetchedComments] = useState([]);
 
   const getComments = async (postId) => {
     setLoading(true);
@@ -17,7 +17,7 @@ const useGetComments = () => {
         }
 
         if (res.ok) {
-          setNewGetComments(data);
+          setFetchedComments(data);
         }
       } else {
         setError("getComment error");
@@ -29,7 +29,7 @@ const useGetComments = () => {
     }
   };
 
-  return { loading, error, getComments, newGetComments };
+  return { loading, error, getComments, fetchedComments };
 };
 
 export default useGetComments;

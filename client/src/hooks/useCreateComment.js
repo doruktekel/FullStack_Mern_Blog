@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-const useCreateComment = () => {
+const useCreateComment = (setComment) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [newCreatedComment, setNewCreatedComment] = useState(null);
+  const [newComment, setNewComment] = useState("");
   const { currentUser } = useSelector((store) => store.user);
 
   const createComment = async (comment, postId) => {
@@ -27,7 +27,9 @@ const useCreateComment = () => {
       }
 
       if (res.ok) {
-        setNewCreatedComment(data);
+        setNewComment(data);
+        setComment("");
+        setError(null);
       }
     } catch (error) {
       setError(error.message);
@@ -36,7 +38,7 @@ const useCreateComment = () => {
     }
   };
 
-  return { createComment, error, loading, newCreatedComment };
+  return { createComment, error, loading, newComment };
 };
 
 export default useCreateComment;
